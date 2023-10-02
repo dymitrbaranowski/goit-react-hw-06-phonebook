@@ -1,31 +1,30 @@
-import propTypes from 'prop-types';
+import React from 'react';
+
 import { ContactListItemBtn } from './ContactList.styled';
 
-export const ContactList = ({ contacts, handleDelete }) => (
-  <div>
+import { useSelector, useDispatch } from 'react-redux';
+import { getVisibleContacts } from 'redux/selectors';
+import { removeContact } from 'redux/contactsSlice';
+
+export const ContactList = () => {
+  const contacts = useSelector(getVisibleContacts);
+  const dispatch = useDispatch();
+  const handleDelete = () => dispatch(removeContact());
+  return (
     <ul>
-      {contacts.map((contact, id) => (
-        <li key={id}>
-          {contact.name}: {contact.number}
-          <ContactListItemBtn
-            type="button"
-            onClick={() => handleDelete(contact.id)}
-          >
-            Delete
-          </ContactListItemBtn>
+      {contacts.map(contact => (
+        <li key={contact.id}>
+          {contact.name + ' : ' + contact.number}
+          {
+            // Кнопка удаления контакта
+            <ContactListItemBtn type="button" name="delete" onClick={handleDelete}>
+              delete
+            </ContactListItemBtn>
+          }
         </li>
       ))}
     </ul>
-  </div>
-);
-
-ContactList.propTypes = {
-  contacts: propTypes.arrayOf(
-    propTypes.exact({
-      id: propTypes.string.isRequired,
-      name: propTypes.string.isRequired,
-      number: propTypes.string.isRequired,
-    })
-  ),
-  handleDelete: propTypes.func.isRequired,
+  );
+  
 };
+
